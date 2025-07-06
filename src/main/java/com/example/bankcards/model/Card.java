@@ -37,7 +37,8 @@ public class Card {
     @Column(name = "validity_period_to")
     private LocalDateTime validityPeriodTo;
 
-    private Boolean active;
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     @PrePersist
     public void createdValidityPeriod(){

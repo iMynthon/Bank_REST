@@ -1,6 +1,8 @@
 package com.example.bankcards.security;
 
-import com.example.bankcards.service.JwtTokenService;
+import com.example.bankcards.model.Role;
+import com.example.bankcards.service.security.JwtTokenService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,14 +10,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
-
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+import static com.example.bankcards.service.security.JwtTokenService.ID_CLAIM;
+import static com.example.bankcards.service.security.JwtTokenService.ROLES_CLAIM;
 
 @Component
 @Slf4j
@@ -41,13 +46,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public Authentication convert(HttpServletRequest request){
         String token = extractBearerToken(request);
         return (token != null && jwtTokenService.validate(token)) ?
-                jwtTokenService.toAuthentication(token) : null;
+                toAuthentication(token) : null;
     }
 
     private String extractBearerToken(HttpServletRequest request){
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         return (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) ?
                 authorizationHeader.substring(BEARER_PREFIX.length()) : null;
+    }
+
+    public Authentication toAuthentication(String token) {
+        Claims claims = jwtTokenService.parseTokenClaims(token);
+        String phoneNumber = claims.getSubject();
+        String id = claims.get(ID_CLAIM, String.class);
+        List<Role> roles = claims.get(ROLES_CLAIM, List.class);
+        jwtTokenService.validateClaims(phoneNumber, id, roles);
+        AppUserPrincipal principal = new AppUserPrincipal(UUID.fromString(id),phoneNumber,roles);
+        return new UsernamePasswordAuthenticationToken(
+                principal,
+                null,
+                roles.stream().map(Role::grantedAuthority).toList()
+        );
     }
 
 }

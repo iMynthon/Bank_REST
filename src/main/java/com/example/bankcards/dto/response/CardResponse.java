@@ -1,13 +1,14 @@
 package com.example.bankcards.dto.response;
 
 import com.example.bankcards.model.PaymentSystem;
-import lombok.Builder;
+import lombok.*;
 
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 @Builder
-public record CardResponse(
-        String numberCard,
-        PaymentSystem paymentSystem,
-        String owner,
-        String validityPeriod
-) {
+public class CardResponse {
+    private String numberCard;
+    private PaymentSystem paymentSystem;
+    private String owner;
+    private String validityPeriod;
 }
