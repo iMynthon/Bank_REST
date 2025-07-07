@@ -7,7 +7,9 @@ import lombok.Builder;
 public record UserRequest(
         String firstName,
         String lastName,
-        String phone,
+        String patronymic,
+        String phoneNumber,
+        String password,
         RoleType role
 ) {
 

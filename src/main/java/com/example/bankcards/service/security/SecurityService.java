@@ -2,6 +2,7 @@ package com.example.bankcards.service.security;
 import com.example.bankcards.dto.request.LoginRequest;
 import com.example.bankcards.dto.response.TokenData;
 import com.example.bankcards.exception.CheckPasswordException;
+import com.example.bankcards.model.Role;
 import com.example.bankcards.model.User;
 import com.example.bankcards.model.jwt.RefreshToken;
 import com.example.bankcards.service.UserService;
@@ -42,7 +43,7 @@ public class SecurityService {
         String token = jwtTokenService.generatedToken(
                 user.getId(),
                 user.getPhoneNumber(),
-                user.getRoles());
+                user.getRoles().stream().map(role -> role.getRoleType().toString()).toList());
         RefreshToken refreshToken = jwtRefreshTokenService.save(user.getId());
         return new TokenData(token,refreshToken.getValue());
     }

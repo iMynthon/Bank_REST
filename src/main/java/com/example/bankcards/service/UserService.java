@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,6 +42,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findById(){
+        List<User> listUser = userRepository.findAll();
         return userRepository.findById(SecurityUtils.userId())
                 .orElseThrow(()-> new EntityNotFoundException("Такой пользователь не зарегистрирован в системe"));
     }
@@ -59,11 +61,7 @@ public class UserService {
 
     @Transactional
     public UserResponse save(UserRequest request){
-        User saveUser = userMapper.requestToEntity(request);
-        Role role = Role.builder().roleType(request.role()).user(saveUser).build();
-        saveUser.getRoles().add(role);
-        saveUser.setPassword(encoder.encode(saveUser.getPassword()));
-        return userMapper.entityToResponse(userRepository.save(saveUser));
+        return userMapper.entityToResponse(userRepository.save(createUser(request)));
     }
 
     @Transactional
@@ -76,6 +74,14 @@ public class UserService {
     public String delete(UUID userId){
         userRepository.deleteById(userId);
         return "Пользователь удален из системы";
+    }
+
+    private User createUser(UserRequest request){
+        User saveUser = userMapper.requestToEntity(request);
+        Role role = Role.builder().roleType(request.role()).user(saveUser).build();
+        saveUser.getRoles().add(role);
+        saveUser.setPassword(encoder.encode(saveUser.getPassword()));
+        return saveUser;
     }
 
 }

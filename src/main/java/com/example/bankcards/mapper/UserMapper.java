@@ -18,6 +18,7 @@ public interface UserMapper {
 
     UserResponse entityToResponse(User user);
 
+    @Mapping(target = "registerTime",expression = "java(java.time.LocalDateTime.now())")
     User requestToEntity(UserRequest request);
 
     default AllUserResponse listEntityToListResponse(Page<User> userPage){

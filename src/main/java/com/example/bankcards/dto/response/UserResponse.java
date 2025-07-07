@@ -1,6 +1,4 @@
 package com.example.bankcards.dto.response;
-
-import com.example.bankcards.model.RoleType;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -12,7 +10,6 @@ public record UserResponse(
         String firstName,
         String lastName,
         String phoneNumber,
-        LocalDateTime registerTime,
-        RoleType role
+        LocalDateTime registerTime
 ) {
 }

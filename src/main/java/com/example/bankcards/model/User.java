@@ -31,7 +31,7 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "register_time")
+    @Column(name = "register_time",insertable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime registerTime;
 

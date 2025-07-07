@@ -1,5 +1,5 @@
 server:
-  port: ${BANK_REST:8090}
+  port: ${BANK_REST:8790}
 spring:
   application:
     name: Bank_REST
@@ -12,9 +12,6 @@ spring:
     hibernate:
       ddl-auto: 'none'
   datasource:
-    url: jdbc:postgresql://localhost:5438/bank_db?currentSchema=bank_schema
-    username: postgres
-    password: postgres
     hikari:
       schema: bank_schema
       connection-init-sql: CREATE SCHEMA IF NOT EXISTS bank_schema
@@ -30,6 +27,6 @@ logging:
     console: '%clr(%d{HH:mm:ss}){faint} %clr(%-5level) %clr([%logger{0}]){cyan} %clr(:){faint} %m%n'
 bank-rest:
   jwt:
-    secret: IpE6TJFTzCYzwOErToyepPfZgASIIpURNPZpzB2zzBD64JvDNmXg6grT8O7DdowGXIO/7lvKqSTG6xODjEiNxg==
+    secret: PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PA==
     tokenExpiration: 30m
     refreshTokenExpiration: 30m

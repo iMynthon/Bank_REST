@@ -1,15 +1,13 @@
 package com.example.bankcards.controller;
-
-import com.example.bankcards.dto.request.IsActiveRequest;
 import com.example.bankcards.dto.request.UserRequest;
 import com.example.bankcards.dto.response.AllUserResponse;
 import com.example.bankcards.dto.response.UserResponse;
-import com.example.bankcards.service.CardService;
 import com.example.bankcards.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,37 +21,36 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public UserResponse findByMeUser(){
         return userService.findByUser();
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/register")
-    public UserResponse save(@RequestBody UserRequest request){
-       return userService.save(request);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/me")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public UserResponse update(@RequestBody UserRequest request){
         return userService.update(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/users")
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public AllUserResponse getAllUsers(@PageableDefault Pageable pageable){
         return userService.findAll(pageable);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{id}/user")
-    public UserResponse findByUser(@PathVariable UUID userId){
+    @GetMapping("/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public UserResponse findByUser(@PathVariable(name = "userId") UUID userId){
         return userService.findByUser(userId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/{id}/delete")
-    public String deleteUser(@PathVariable UUID userId){
+    @DeleteMapping("/{userId}/delete")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public String deleteUser(@PathVariable(name = "userId") UUID userId){
         return userService.delete(userId);
     }
 }

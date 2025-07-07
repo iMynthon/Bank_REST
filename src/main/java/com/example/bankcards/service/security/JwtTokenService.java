@@ -2,13 +2,16 @@ package com.example.bankcards.service.security;
 
 import com.example.bankcards.exception.TokenParseException;
 import com.example.bankcards.model.Role;
+import com.example.bankcards.model.RoleType;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
@@ -33,7 +36,7 @@ public class JwtTokenService {
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA512");
     }
 
-    public String generatedToken(UUID userId, String phoneNumber, List<Role> roles){
+    public String generatedToken(UUID userId, String phoneNumber, List<String> roles){
         return Jwts.builder()
                 .setSubject(phoneNumber)
                 .setExpiration(Date.from(Instant.now().plus(tokenExpiration)))

@@ -13,8 +13,9 @@ CREATE TABLE bank_schema.users(
    first_name VARCHAR(100) NOT NULL,
    last_name VARCHAR(100) NOT NULL,
    patronymic VARCHAR(100) NOT NULL,
-   phone VARCHAR(20) NOT NULL UNIQUE,
-   register_time TIMESTAMP
+   password VARCHAR(255) NOT NULL,
+   phone_number VARCHAR(20) NOT NULL UNIQUE,
+   register_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE bank_schema.roles(
