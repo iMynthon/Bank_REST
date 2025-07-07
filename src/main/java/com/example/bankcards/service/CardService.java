@@ -45,7 +45,7 @@ public class CardService {
 
     @Transactional
     public CardResponse save(CardRequest cardRequest) {
-        User user = userService.findById(SecurityUtils.userId());
+        User user = userService.findById();
         Card card = cardRepository.save(Card.builder()
                 .numberCard(stringEncryptor.encrypt(cardRequest.numberCard()))
                 .paymentSystem(cardRequest.paymentSystem())

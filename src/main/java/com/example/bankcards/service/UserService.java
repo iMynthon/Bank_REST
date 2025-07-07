@@ -8,15 +8,17 @@ import com.example.bankcards.model.Role;
 import com.example.bankcards.model.User;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.util.SecurityUtils;
+import com.example.bankcards.util.StringUtilsMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 import java.util.UUID;
+
+import static com.example.bankcards.util.StringUtilsMessage.ENTITY_NOT_FOUND;
+import static com.example.bankcards.util.StringUtilsMessage.USER_DELETE;
 
 @Service
 @RequiredArgsConstructor
@@ -32,31 +34,26 @@ public class UserService {
         return userMapper.listEntityToListResponse(userRepository.findAll(pageable));
     }
 
-    public UserResponse findByUser(){
+    public UserResponse findByUserSecurityContext(){
         return userMapper.entityToResponse(context.getBean(UserService.class).findById());
     }
 
-    public UserResponse findByUser(UUID id){
-        return userMapper.entityToResponse(context.getBean(UserService.class).findById(id));
+    @Transactional(readOnly = true)
+    public UserResponse findByUserId(UUID id){
+        return userMapper.entityToResponse(userRepository.findById(id)
+                .orElseThrow());
     }
 
     @Transactional(readOnly = true)
     public User findById(){
-        List<User> listUser = userRepository.findAll();
         return userRepository.findById(SecurityUtils.userId())
-                .orElseThrow(()-> new EntityNotFoundException("Такой пользователь не зарегистрирован в системe"));
-    }
-
-    @Transactional(readOnly = true)
-    public User findById(UUID id){
-        return userRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Такой пользователь не зарегистрирован в системe"));
+                .orElseThrow(()-> new EntityNotFoundException(ENTITY_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public User findByPhoneNumber(String phoneNumber){
         return userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(()-> new EntityNotFoundException("Такой пользователь не зарегистрирован в системe"));
+                .orElseThrow(()-> new EntityNotFoundException(ENTITY_NOT_FOUND));
     }
 
     @Transactional
@@ -73,7 +70,7 @@ public class UserService {
 
     public String delete(UUID userId){
         userRepository.deleteById(userId);
-        return "Пользователь удален из системы";
+        return USER_DELETE;
     }
 
     private User createUser(UserRequest request){

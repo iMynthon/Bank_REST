@@ -23,7 +23,7 @@ public class UserController {
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public UserResponse findByMeUser(){
-        return userService.findByUser();
+        return userService.findByUserSecurityContext();
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -44,7 +44,7 @@ public class UserController {
     @GetMapping("/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public UserResponse findByUser(@PathVariable(name = "userId") UUID userId){
-        return userService.findByUser(userId);
+        return userService.findByUserId(userId);
     }
 
     @ResponseStatus(HttpStatus.OK)
