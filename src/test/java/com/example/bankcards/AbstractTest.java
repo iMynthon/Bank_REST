@@ -1,6 +1,4 @@
 package com.example.bankcards;
-
-import com.example.bankcards.dto.request.LoginRequest;
 import com.example.bankcards.model.Role;
 import com.example.bankcards.model.RoleType;
 import com.example.bankcards.model.User;
@@ -8,10 +6,7 @@ import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.security.JwtTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,7 +50,6 @@ public class AbstractTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
-
     @Container
     static PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.2-alpine"))
@@ -66,6 +60,7 @@ public class AbstractTest {
         registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+
     }
 
     @BeforeEach

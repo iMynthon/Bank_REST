@@ -38,19 +38,18 @@ CREATE TABLE bank_schema.cards(
 
 CREATE TABLE bank_schema.cards_transfers(
  id UUID PRIMARY KEY NOT NULL,
- source_card_id UUID NOT NULL,
- target_card_id UUID NOT NULL,
+ source_card_number VARCHAR(55) NOT NULL,
+ target_card_number VARCHAR(55) NOT NULL,
  amount NUMERIC(15,2) NOT NULL,
  transfer_time TIMESTAMP NOT NULL,
  status_transfer VARCHAR(55) NOT NULL,
- CONSTRAINT fk_transfer_source FOREIGN KEY (source_card_id) REFERENCES cards(id),
- CONSTRAINT fk_transfer_target FOREIGN KEY (target_card_id) REFERENCES cards(id)
 );
 
 CREATE INDEX idx_cards_user_id ON cards(user_id);
 CREATE INDEX idx_cards_validity_period ON cards(validity_period_from, validity_period_to);
 CREATE INDEX idx_cards_active ON cards(is_active);
 CREATE INDEX idx_transfers_status ON cards_transfers(status_transfer);
-CREATE INDEX idx_transfers_cards ON cards_transfers(source_card_id, target_card_id);
+CREATE INDEX idx_transfers_source ON cards_transfers(source_card_number);
+CREATE INDEX idx_transfers_target ON cards_transfers(target_card_number);
 CREATE INDEX idx_transfers_time ON cards_transfers(transfer_time);
 CREATE INDEX idx_roles_user_id ON roles(user_id);

@@ -8,7 +8,6 @@ import com.example.bankcards.model.Role;
 import com.example.bankcards.model.User;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.util.SecurityUtils;
-import com.example.bankcards.util.StringUtilsMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;

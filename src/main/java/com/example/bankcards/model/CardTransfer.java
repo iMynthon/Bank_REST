@@ -19,13 +19,11 @@ public class CardTransfer {
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private UUID id;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinColumn(name = "source_card_id")
-    private Card sourceCard;
+    @Column(name = "source_card")
+    private String sourceCard;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    @JoinColumn(name = "target_card_id")
-    private Card targetCard;
+    @Column(name = "target_card")
+    private String targetCard;
 
     private BigDecimal amount;
 
