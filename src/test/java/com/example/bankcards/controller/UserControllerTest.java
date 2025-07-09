@@ -1,10 +1,8 @@
 package com.example.bankcards.controller;
 import com.example.bankcards.AbstractTest;
-import com.example.bankcards.model.RoleType;
 import com.example.bankcards.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.util.Collections;
 
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.notNullValue;

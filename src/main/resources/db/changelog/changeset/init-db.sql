@@ -29,6 +29,7 @@ CREATE TABLE bank_schema.cards(
  id UUID PRIMARY KEY NOT NULL,
  number_card VARCHAR(55) NOT NULL UNIQUE,
  payment_system VARCHAR(55) NOT NULL,
+ score NUMERIC(15,2) NOT NULL,
  validity_period_from TIMESTAMP NOT NULL,
  validity_period_to TIMESTAMP NOT NULL,
  is_active BOOLEAN NOT NULL,
@@ -38,11 +39,13 @@ CREATE TABLE bank_schema.cards(
 
 CREATE TABLE bank_schema.cards_transfers(
  id UUID PRIMARY KEY NOT NULL,
+ user_id UUID NOT NULL,
  source_card_number VARCHAR(55) NOT NULL,
  target_card_number VARCHAR(55) NOT NULL,
  amount NUMERIC(15,2) NOT NULL,
+ error VARCHAR(255),
  transfer_time TIMESTAMP NOT NULL,
- status_transfer VARCHAR(55) NOT NULL,
+ status_transfer VARCHAR(55) NOT NULL
 );
 
 CREATE INDEX idx_cards_user_id ON cards(user_id);

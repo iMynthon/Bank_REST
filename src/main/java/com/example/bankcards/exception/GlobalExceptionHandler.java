@@ -14,4 +14,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse catchEntityNotFoundException(EntityNotFoundException efe){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), efe.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ErrorResponse catchInsufficientFundsException(InsufficientFundsException ife){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),ife.getMessage());
+    }
 }

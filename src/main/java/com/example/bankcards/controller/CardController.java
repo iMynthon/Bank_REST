@@ -1,14 +1,19 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.dto.request.CardRequest;
+import com.example.bankcards.dto.request.CardTransferRequest;
 import com.example.bankcards.dto.request.IsActiveRequest;
 import com.example.bankcards.dto.response.AllCardResponse;
+import com.example.bankcards.dto.response.AllCardTransferResponse;
 import com.example.bankcards.dto.response.CardResponse;
+import com.example.bankcards.dto.response.CardTransferResponse;
 import com.example.bankcards.service.CardService;
+import com.example.bankcards.service.CardTransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,22 +22,47 @@ import org.springframework.web.bind.annotation.*;
 public class CardController {
 
     private final CardService cardService;
+    private final CardTransferService cardTransferService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{id}/user")
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public AllCardResponse getAllCards(@PageableDefault Pageable pageable){
+        return cardService.findAllCards(pageable);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public AllCardResponse getAllMeCard(@PageableDefault Pageable pageable){
         return cardService.findByCardsToUser(pageable);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/isActive")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String isActiveCards(@RequestBody IsActiveRequest request){
         return cardService.isActiveRequest(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public CardResponse save(@RequestBody CardRequest request){
         return cardService.save(request);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/transfer")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public CardTransferResponse transferMeCards(@RequestBody CardTransferRequest request){
+        return cardTransferService.transferMeCards(request);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/me/transfers")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public AllCardTransferResponse allMeCardsTransfer(){
+        return cardTransferService.findMeTransfer();
     }
 }

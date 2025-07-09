@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,6 +27,8 @@ public class Card {
 
     @Column(name = "number_card")
     private String numberCard;
+
+    private BigDecimal score;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_system")

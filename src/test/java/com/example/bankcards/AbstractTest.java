@@ -1,8 +1,5 @@
 package com.example.bankcards;
-import com.example.bankcards.model.Role;
-import com.example.bankcards.model.RoleType;
-import com.example.bankcards.model.User;
-import com.example.bankcards.repository.CardRepository;
+import com.example.bankcards.model.*;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.security.JwtTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,8 +17,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,9 +32,6 @@ public class AbstractTest {
 
     @Autowired
     protected UserRepository userRepository;
-
-    @Autowired
-    protected CardRepository cardRepository;
 
     @Autowired
     protected JwtTokenService jwtTokenService;
@@ -66,7 +61,13 @@ public class AbstractTest {
     @BeforeEach
     void setUp(){
 
-        Role roleUser1 = Role.builder()
+        userRepository.saveAll(new ArrayList<>(List.of(createUser())));
+    }
+
+
+    private User[] createUser(){
+
+        Role roleUser = Role.builder()
                 .roleType(RoleType.ROLE_USER)
                 .build();
         User user = User.builder()
@@ -76,8 +77,11 @@ public class AbstractTest {
                 .phoneNumber("9319206789")
                 .password(encoder.encode("12121212121"))
                 .registerTime(LocalDateTime.now())
-                .roles(Collections.singletonList(roleUser1))
+                .roles(Collections.singletonList(roleUser))
                 .build();
+        roleUser.setUser(user);
+        Card[] cards = cardUser(user);
+        user.setCards(new ArrayList<>(List.of(cards)));
 
         Role roleUser2 = Role.builder()
                 .roleType(RoleType.ROLE_ADMIN)
@@ -92,7 +96,6 @@ public class AbstractTest {
                 .roles(Collections.singletonList(roleUser2))
                 .build();
         roleUser2.setUser(user2);
-        userRepository.save(user2);
 
         Role roleUser3 = Role.builder()
                 .roleType(RoleType.ROLE_USER)
@@ -107,7 +110,6 @@ public class AbstractTest {
                 .roles(Collections.singletonList(roleUser3))
                 .build();
         roleUser3.setUser(user3);
-        userRepository.save(user3);
 
         Role roleUser4 = Role.builder()
                 .roleType(RoleType.ROLE_USER)
@@ -122,7 +124,8 @@ public class AbstractTest {
                 .roles(Collections.singletonList(roleUser4))
                 .build();
         roleUser4.setUser(user4);
-        userRepository.save(user4);
+        Card[] card1 = cardUser2(user4);
+        user4.setCards(new ArrayList<>(List.of(card1)));
 
         Role roleUser5 = Role.builder()
                 .roleType(RoleType.ROLE_USER)
@@ -137,7 +140,6 @@ public class AbstractTest {
                 .roles(Collections.singletonList(roleUser5))
                 .build();
         roleUser5.setUser(user5);
-        userRepository.save(user5);
 
         Role roleUser6 = Role.builder()
                 .roleType(RoleType.ROLE_USER)
@@ -152,9 +154,62 @@ public class AbstractTest {
                 .roles(Collections.singletonList(roleUser6))
                 .build();
         roleUser6.setUser(user6);
-        userRepository.save(user6);
+        return new User[]{user,user2,user3,user4,user5,user6};
+    }
 
-        roleUser1.setUser(user);
-        userRepository.save(user);
+    private Card[] cardUser(User user){
+        return new Card[]{
+                Card.builder()
+                        .user(user)
+                        .score(new BigDecimal(2000000))
+                        .numberCard("1111 1111 1111 1111")
+                        .paymentSystem(PaymentSystem.VISA)
+                        .isActive(new Random().nextBoolean())
+                        .build(),
+
+                Card.builder()
+                        .user(user)
+                        .score(new BigDecimal(300000))
+                        .numberCard("2222 2222 2222 2222")
+                        .paymentSystem(PaymentSystem.MASTER_CARD)
+                        .isActive(new Random().nextBoolean())
+                        .build(),
+
+                Card.builder()
+                        .user(user)
+                        .score(new BigDecimal(4000000))
+                        .numberCard("3333 3333 3333 3333")
+                        .paymentSystem(PaymentSystem.MIR)
+                        .isActive(new Random().nextBoolean())
+                        .build()
+        };
+    }
+
+    private Card[] cardUser2(User user){
+        return new Card[]{
+                Card.builder()
+                        .user(user)
+                        .score(new BigDecimal(345000))
+                        .numberCard("4444 4444 4444 4444")
+                        .paymentSystem(PaymentSystem.VISA)
+                        .isActive(new Random().nextBoolean())
+                        .build(),
+
+                Card.builder()
+                        .user(user)
+                        .score(new BigDecimal(450000))
+                        .numberCard("5555 5555 5555 5555")
+                        .paymentSystem(PaymentSystem.MASTER_CARD)
+                        .isActive(new Random().nextBoolean())
+                        .build(),
+
+                Card.builder()
+                        .user(user)
+                        .score(new BigDecimal(343434343))
+                        .numberCard("6666 6666 6666 6666")
+                        .paymentSystem(PaymentSystem.MIR)
+                        .isActive(new Random().nextBoolean())
+                        .build()
+        };
     }
 }

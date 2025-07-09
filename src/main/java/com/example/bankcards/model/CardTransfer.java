@@ -19,6 +19,9 @@ public class CardTransfer {
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private UUID id;
 
+    @Column(name = "user_id")
+    private UUID userId;
+
     @Column(name = "source_card")
     private String sourceCard;
 
@@ -26,6 +29,8 @@ public class CardTransfer {
     private String targetCard;
 
     private BigDecimal amount;
+
+    private String errorMessage;
 
     @Column(name = "transfer_time")
     private LocalDateTime transferTime;
