@@ -20,4 +20,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse catchInsufficientFundsException(InsufficientFundsException ife){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),ife.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(isActiveRequestException.class)
+    public ErrorResponse catchIsActiveRequestException(isActiveRequestException iar){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),iar.getMessage());
+    }
 }

@@ -3,20 +3,15 @@ import com.example.bankcards.model.*;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.security.JwtTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -27,7 +22,7 @@ import java.util.*;
 @Transactional
 public class AbstractTest {
 
-    protected final static String phoneNumber = "9319206789";
+    protected final static String phoneNumber = "9315678900";
     protected final static String adminNumber = "9319206790";
 
     @Autowired
@@ -45,25 +40,15 @@ public class AbstractTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    @Container
-    static PostgreSQLContainer<?> postgreSQLContainer =
-            new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.2-alpine"))
-                    .withReuse(true);
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-
-    }
-
     @BeforeEach
     void setUp(){
-
         userRepository.saveAll(new ArrayList<>(List.of(createUser())));
     }
 
+    @AfterEach
+    void allDelete(){
+        userRepository.deleteAll();
+    }
 
     private User[] createUser(){
 
@@ -90,7 +75,7 @@ public class AbstractTest {
                 .firstName("Alice")
                 .lastName("Smith")
                 .patronymic("Johnson")
-                .phoneNumber("9319206790")
+                .phoneNumber(adminNumber)
                 .password(encoder.encode("password123"))
                 .registerTime(LocalDateTime.now())
                 .roles(Collections.singletonList(roleUser2))
@@ -118,7 +103,7 @@ public class AbstractTest {
                 .firstName("Emma")
                 .lastName("Wilson")
                 .patronymic("Grace")
-                .phoneNumber("9319206792")
+                .phoneNumber(phoneNumber)
                 .password(encoder.encode("emma789"))
                 .registerTime(LocalDateTime.now())
                 .roles(Collections.singletonList(roleUser4))
@@ -185,18 +170,18 @@ public class AbstractTest {
         };
     }
 
-    private Card[] cardUser2(User user){
+    private Card[] cardUser2(User user4){
         return new Card[]{
                 Card.builder()
-                        .user(user)
+                        .user(user4)
                         .score(new BigDecimal(345000))
                         .numberCard("4444 4444 4444 4444")
                         .paymentSystem(PaymentSystem.VISA)
-                        .isActive(new Random().nextBoolean())
+                        .isActive(false)
                         .build(),
 
                 Card.builder()
-                        .user(user)
+                        .user(user4)
                         .score(new BigDecimal(450000))
                         .numberCard("5555 5555 5555 5555")
                         .paymentSystem(PaymentSystem.MASTER_CARD)
@@ -204,7 +189,7 @@ public class AbstractTest {
                         .build(),
 
                 Card.builder()
-                        .user(user)
+                        .user(user4)
                         .score(new BigDecimal(343434343))
                         .numberCard("6666 6666 6666 6666")
                         .paymentSystem(PaymentSystem.MIR)

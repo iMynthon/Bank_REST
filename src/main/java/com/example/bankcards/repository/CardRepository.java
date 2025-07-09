@@ -26,14 +26,14 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
     Optional<CardProjections> findNumberCardByUserIdAndNumberCard(UUID userId,String numberCard);
 
     @Modifying
-    @Query(value = "Update cards Set is_active = :isActive WHERE number_card = :numberCard",nativeQuery = true)
+    @Query(value = "UPDATE cards SET is_active = :isActive WHERE number_card = :numberCard",nativeQuery = true)
     void IsActive(String numberCard,boolean isActive);
 
     @Modifying
-    @Query(value = "UPDATE cards SET score = score + :amount WHERE number_card = :cardNumber", nativeQuery = true)
-    void addToScore(String cardNumber, BigDecimal amount);
+    @Query(value = "UPDATE cards SET score = score + :amount WHERE number_card = :numberCard", nativeQuery = true)
+    void addToScore(String numberCard, BigDecimal amount);
 
     @Modifying
-    @Query(value = "UPDATE cards SET score = score - :amount WHERE number_card = :cardNumber", nativeQuery = true)
-    void subtractFromScore(String cardNumber, BigDecimal amount);
+    @Query(value = "UPDATE cards SET score = score - :amount WHERE number_card = :numberCard", nativeQuery = true)
+    void subtractFromScore(String numberCard, BigDecimal amount);
 }

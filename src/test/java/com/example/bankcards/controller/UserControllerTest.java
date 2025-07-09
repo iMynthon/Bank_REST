@@ -1,8 +1,10 @@
 package com.example.bankcards.controller;
 import com.example.bankcards.AbstractTest;
+import com.example.bankcards.PostgresTestContainerInitializer;
 import com.example.bankcards.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.notNullValue;
@@ -12,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+@ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
 public class UserControllerTest extends AbstractTest {
 
     @Test

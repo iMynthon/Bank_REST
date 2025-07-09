@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
-import static com.example.bankcards.util.StringUtilsMessage.ENTITY_NOT_FOUND;
 import static com.example.bankcards.util.StringUtilsMessage.USER_DELETE;
+import static com.example.bankcards.util.StringUtilsMessage.USER_ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -46,13 +46,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findById(){
         return userRepository.findById(SecurityUtils.userId())
-                .orElseThrow(()-> new EntityNotFoundException(ENTITY_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
-    public User findByPhoneNumber(String phoneNumber){
-        return userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(()-> new EntityNotFoundException(ENTITY_NOT_FOUND));
+                .orElseThrow(()-> new EntityNotFoundException(USER_ENTITY_NOT_FOUND));
     }
 
     @Transactional

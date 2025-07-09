@@ -30,6 +30,7 @@ public class CardTransfer {
 
     private BigDecimal amount;
 
+    @Column(name = "error_message")
     private String errorMessage;
 
     @Column(name = "transfer_time")
