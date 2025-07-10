@@ -5,6 +5,7 @@ import com.example.bankcards.PostgresTestContainerInitializer;
 import com.example.bankcards.dto.request.LoginRequest;
 import com.example.bankcards.dto.request.UserRequest;
 import com.example.bankcards.model.RoleType;
+import com.example.bankcards.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class AuthorizationControllerTest extends AbstractTest {
 
     @Test
-    @DisplayName("Тест регистрация пользователя")
+    @DisplayName("Тест -> регистрация пользователя")
     void testRegisterEndpoint() throws Exception{
 
         UserRequest userRequest = UserRequest.builder()
@@ -38,15 +39,35 @@ public class AuthorizationControllerTest extends AbstractTest {
     }
 
     @Test
-    @DisplayName("Тест логин пользователя")
+    @DisplayName("Тест -> логин пользователя")
     void testLoginEndpoints() throws Exception{
+        User user = userRepository.findByPhoneNumber(phoneNumber).orElseThrow();
 
-        LoginRequest request = new LoginRequest("9319206789","12121212121");
+        String token = "Bearer " + jwtTokenService
+                .generatedToken(user.getId(), phoneNumber, user.getRoles().stream().map(role -> role.getRoleType().toString()).toList());
+        LoginRequest request = new LoginRequest(user.getPhoneNumber(),"emma789");
 
         mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(request))
+                        .header("Authorization",token))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Тест -> логин пользователя c неверными данными")
+    void testLoginEndpointsException() throws Exception{
+        User user = userRepository.findByPhoneNumber(phoneNumber).orElseThrow();
+
+        String token = "Bearer " + jwtTokenService
+                .generatedToken(user.getId(), phoneNumber, user.getRoles().stream().map(role -> role.getRoleType().toString()).toList());
+        LoginRequest request = new LoginRequest(user.getPhoneNumber(),"12121212121212121");
+
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("Authorization",token))
+                .andExpect(status().isForbidden());
     }
 
 }

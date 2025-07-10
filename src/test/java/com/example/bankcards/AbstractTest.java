@@ -2,12 +2,15 @@ package com.example.bankcards;
 import com.example.bankcards.model.*;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.security.JwtTokenService;
+import com.example.bankcards.util.StringCreatorUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,20 +19,26 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.example.bankcards.util.StringCreatorUtils.hashCard;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
 @Transactional
 public class AbstractTest {
 
-    protected final static String phoneNumber = "9315678900";
-    protected final static String adminNumber = "9319206790";
+    protected final static String phoneNumber = "89315678900";
+    protected final static String adminNumber = "89319206790";
 
     @Autowired
     protected UserRepository userRepository;
 
     @Autowired
     protected JwtTokenService jwtTokenService;
+
+    @Autowired
+    @Lazy
+    protected StringEncryptor stringEncryptor;
 
     @Autowired
     protected PasswordEncoder encoder;
@@ -59,7 +68,7 @@ public class AbstractTest {
                 .firstName("Json")
                 .lastName("Do")
                 .patronymic("Aslo")
-                .phoneNumber("9319206789")
+                .phoneNumber("79319206789")
                 .password(encoder.encode("12121212121"))
                 .registerTime(LocalDateTime.now())
                 .roles(Collections.singletonList(roleUser))
@@ -89,7 +98,7 @@ public class AbstractTest {
                 .firstName("Bob")
                 .lastName("Brown")
                 .patronymic("Lee")
-                .phoneNumber("9319206791")
+                .phoneNumber("79319206791")
                 .password(encoder.encode("qwerty456"))
                 .registerTime(LocalDateTime.now())
                 .roles(Collections.singletonList(roleUser3))
@@ -119,7 +128,7 @@ public class AbstractTest {
                 .firstName("David")
                 .lastName("Taylor")
                 .patronymic("James")
-                .phoneNumber("9319206793")
+                .phoneNumber("89319206793")
                 .password(encoder.encode("david101"))
                 .registerTime(LocalDateTime.now())
                 .roles(Collections.singletonList(roleUser5))
@@ -133,7 +142,7 @@ public class AbstractTest {
                 .firstName("Sophia")
                 .lastName("Anderson")
                 .patronymic("Rose")
-                .phoneNumber("9319206794")
+                .phoneNumber("79319206794")
                 .password(encoder.encode("sophia202"))
                 .registerTime(LocalDateTime.now())
                 .roles(Collections.singletonList(roleUser6))
@@ -147,7 +156,8 @@ public class AbstractTest {
                 Card.builder()
                         .user(user)
                         .score(new BigDecimal(2000000))
-                        .numberCard("1111 1111 1111 1111")
+                        .numberCard(stringEncryptor.encrypt("1111 1111 1111 1111"))
+                        .hashCardNumber(hashCard("1111 1111 1111 1111"))
                         .paymentSystem(PaymentSystem.VISA)
                         .isActive(new Random().nextBoolean())
                         .build(),
@@ -155,7 +165,8 @@ public class AbstractTest {
                 Card.builder()
                         .user(user)
                         .score(new BigDecimal(300000))
-                        .numberCard("2222 2222 2222 2222")
+                        .numberCard(stringEncryptor.encrypt("2222 2222 2222 2222"))
+                        .hashCardNumber(hashCard("2222 2222 2222 2222"))
                         .paymentSystem(PaymentSystem.MASTERCARD)
                         .isActive(new Random().nextBoolean())
                         .build(),
@@ -163,7 +174,8 @@ public class AbstractTest {
                 Card.builder()
                         .user(user)
                         .score(new BigDecimal(4000000))
-                        .numberCard("3333 3333 3333 3333")
+                        .numberCard(stringEncryptor.encrypt("3333 3333 3333 3333"))
+                        .hashCardNumber(hashCard("3333 3333 3333 3333"))
                         .paymentSystem(PaymentSystem.MIR)
                         .isActive(new Random().nextBoolean())
                         .build()
@@ -175,25 +187,28 @@ public class AbstractTest {
                 Card.builder()
                         .user(user4)
                         .score(new BigDecimal(345000))
-                        .numberCard("4444 4444 4444 4444")
+                        .numberCard(stringEncryptor.encrypt("4444 4444 4444 4444"))
+                        .hashCardNumber(hashCard("4444 4444 4444 4444"))
                         .paymentSystem(PaymentSystem.VISA)
-                        .isActive(false)
+                        .isActive(true)
                         .build(),
 
                 Card.builder()
                         .user(user4)
                         .score(new BigDecimal(450000))
-                        .numberCard("5555 5555 5555 5555")
+                        .numberCard(stringEncryptor.encrypt("5555 5555 5555 5555"))
+                        .hashCardNumber(hashCard("5555 5555 5555 5555"))
                         .paymentSystem(PaymentSystem.MASTERCARD)
-                        .isActive(new Random().nextBoolean())
+                        .isActive(false)
                         .build(),
 
                 Card.builder()
                         .user(user4)
                         .score(new BigDecimal(343434343))
-                        .numberCard("6666 6666 6666 6666")
+                        .numberCard(stringEncryptor.encrypt("6666 6666 6666 6666"))
+                        .hashCardNumber(hashCard("6666 6666 6666 6666"))
                         .paymentSystem(PaymentSystem.MIR)
-                        .isActive(new Random().nextBoolean())
+                        .isActive(true)
                         .build()
         };
     }

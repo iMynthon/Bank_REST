@@ -30,16 +30,8 @@ public class SecurityService {
         User user = userRepository.findByPhoneNumber(request.phoneNumber())
                 .orElseThrow(()-> new EntityNotFoundException(USER_ENTITY_NOT_FOUND));
         if(!passwordEncoder.matches(request.password(),user.getPassword())){
-            log.error("Exception trying to check password for email: {}", user.getPassword());
             throw new CheckPasswordException(PASSWORD_INCORRECT);
         }
-        return createTokenData(user);
-    }
-
-    public TokenData processRefreshToken(String refreshTokenValue){
-        RefreshToken refreshToken = jwtRefreshTokenService.getByValue(refreshTokenValue);
-        User user = userRepository.findById(refreshToken.getUserId())
-                .orElseThrow(()-> new EntityNotFoundException(USER_ENTITY_NOT_FOUND));
         return createTokenData(user);
     }
 

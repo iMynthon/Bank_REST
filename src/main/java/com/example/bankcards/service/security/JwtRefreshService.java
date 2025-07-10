@@ -26,15 +26,6 @@ public class JwtRefreshService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-    @Transactional
-    public RefreshToken getByValue(String tokenValue){
-        RefreshToken refreshToken = refreshTokenRepository.findByValue(tokenValue).orElseThrow(
-                ()-> new EntityNotFoundException("Ошибка получения токена"));
-        refreshTokenRepository.delete(refreshToken);
-        RefreshToken newRefreshToken = generateNewToken(refreshToken.getUserId());
-        return refreshTokenRepository.save(newRefreshToken);
-    }
-
     public RefreshToken generateNewToken(UUID userId) {
         return RefreshToken.builder()
                 .id(UUID.randomUUID().toString())
