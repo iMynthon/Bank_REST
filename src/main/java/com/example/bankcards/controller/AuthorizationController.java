@@ -1,5 +1,6 @@
 package com.example.bankcards.controller;
 
+import com.example.bankcards.aop.LogController;
 import com.example.bankcards.dto.request.LoginRequest;
 import com.example.bankcards.dto.request.UserRequest;
 import com.example.bankcards.dto.response.TokenData;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@LogController
 public class AuthorizationController {
 
     private final UserService userService;

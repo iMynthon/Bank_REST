@@ -1,5 +1,6 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.aop.LogService;
 import com.example.bankcards.dto.request.CardTransferRequest;
 import com.example.bankcards.dto.response.AllCardTransferResponse;
 import com.example.bankcards.dto.response.CardTransferResponse;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@LogService
 public class CardTransferService {
 
     private final CardTransferRepository transferRepository;

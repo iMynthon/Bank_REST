@@ -1,5 +1,7 @@
 package com.example.bankcards.service;
+import com.example.bankcards.aop.LogService;
 import com.example.bankcards.dto.request.CardRequest;
+import com.example.bankcards.dto.request.DepositRequest;
 import com.example.bankcards.dto.request.IsActiveRequest;
 import com.example.bankcards.dto.response.AllCardResponse;
 import com.example.bankcards.dto.response.CardResponse;
@@ -29,6 +31,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@LogService
 public class CardService {
 
     private final CardRepository cardRepository;
@@ -59,6 +62,12 @@ public class CardService {
     }
 
     @Transactional
+    public String depositMeCard(DepositRequest request){
+        cardRepository.addToScore(request.numberCard(),request.score());
+        return String.format("Карта - %s - успешно пополнена неа сумму - %s",StringMaskedUtils.maskedNumberCard(request.numberCard()),request.score());
+    }
+
+    @Transactional
     public CardResponse save(CardRequest cardRequest) {
         User user = userRepository.findById(cardRequest.userId())
                 .orElseThrow(() -> new EntityNotFoundException(StringUtilsMessage.USER_ENTITY_NOT_FOUND));
@@ -67,6 +76,7 @@ public class CardService {
                 .paymentSystem(cardRequest.paymentSystem())
                 .isActive(false)
                 .user(user)
+                .score(new BigDecimal(0))
                 .build());
         return entityToResponse(card);
     }
@@ -101,8 +111,10 @@ public class CardService {
         return CardResponse.builder()
                 .numberCard(StringMaskedUtils.maskedNumberCard(card.getNumberCard()))
                 .paymentSystem(card.getPaymentSystem())
+                .score(card.getScore())
                 .owner(StringMaskedUtils.createOwner(card.getUser().getFirstName(),card.getUser().getLastName(),card.getUser().getPatronymic()))
                 .validityPeriod(StringMaskedUtils.createValidityPeriod(card.getValidityPeriodFrom(),card.getValidityPeriodTo()))
+                .isActive(card.getIsActive())
                 .build();
     }
 }

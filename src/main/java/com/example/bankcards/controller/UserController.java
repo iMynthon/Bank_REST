@@ -1,4 +1,5 @@
 package com.example.bankcards.controller;
+import com.example.bankcards.aop.LogController;
 import com.example.bankcards.dto.request.UserRequest;
 import com.example.bankcards.dto.response.AllUserResponse;
 import com.example.bankcards.dto.response.UserResponse;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/user")
+@LogController
 public class UserController {
 
     private final UserService userService;

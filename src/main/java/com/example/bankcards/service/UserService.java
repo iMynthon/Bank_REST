@@ -1,4 +1,5 @@
 package com.example.bankcards.service;
+import com.example.bankcards.aop.LogService;
 import com.example.bankcards.dto.request.UserRequest;
 import com.example.bankcards.dto.response.AllUserResponse;
 import com.example.bankcards.dto.response.UserResponse;
@@ -21,12 +22,14 @@ import static com.example.bankcards.util.StringUtilsMessage.USER_ENTITY_NOT_FOUN
 
 @Service
 @RequiredArgsConstructor
+@LogService
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final ApplicationContext context;
     private final PasswordEncoder encoder;
+
 
     @Transactional(readOnly = true)
     public AllUserResponse findAll(Pageable pageable){
@@ -57,7 +60,8 @@ public class UserService {
     @Transactional
     public UserResponse update(UserRequest request){
         User exists = context.getBean(UserService.class).findById();
-        userMapper.updateEntity(exists,userMapper.requestToEntity(request));
+        User root = userMapper.requestToEntity(request);
+        userMapper.updateEntity(exists,root);
         return userMapper.entityToResponse(userRepository.save(exists));
     }
 

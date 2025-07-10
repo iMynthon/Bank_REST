@@ -1,7 +1,9 @@
 package com.example.bankcards.controller;
 
+import com.example.bankcards.aop.LogController;
 import com.example.bankcards.dto.request.CardRequest;
 import com.example.bankcards.dto.request.CardTransferRequest;
+import com.example.bankcards.dto.request.DepositRequest;
 import com.example.bankcards.dto.request.IsActiveRequest;
 import com.example.bankcards.dto.response.*;
 import com.example.bankcards.service.CardService;
@@ -13,11 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/card")
+@LogController
 public class CardController {
 
     private final CardService cardService;
@@ -49,6 +53,13 @@ public class CardController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public CardResponse save(@RequestBody CardRequest request){
         return cardService.save(request);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/me/deposit")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public String depositMeCard(@RequestBody DepositRequest request){
+        return cardService.depositMeCard(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
