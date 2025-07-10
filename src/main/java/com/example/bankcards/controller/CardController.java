@@ -8,20 +8,20 @@ import com.example.bankcards.dto.request.IsActiveRequest;
 import com.example.bankcards.dto.response.*;
 import com.example.bankcards.service.CardService;
 import com.example.bankcards.service.CardTransferService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/card")
 @LogController
+@Validated
 public class CardController {
 
     private final CardService cardService;
@@ -44,28 +44,28 @@ public class CardController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/active")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public isActiveResponse isActiveAndBlockCards(@RequestBody IsActiveRequest request){
+    public isActiveResponse isActiveAndBlockCards(@RequestBody @Valid IsActiveRequest request){
         return cardService.isActiveAndBlockRequest(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public CardResponse save(@RequestBody CardRequest request){
+    public CardResponse save(@RequestBody @Valid CardRequest request){
         return cardService.save(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/me/deposit")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public String depositMeCard(@RequestBody DepositRequest request){
+    public String depositMeCard(@RequestBody @Valid DepositRequest request){
         return cardService.depositMeCard(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/transfer")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public CardTransferResponse transferMeCards(@RequestBody CardTransferRequest request){
+    public CardTransferResponse transferMeCards(@RequestBody @Valid CardTransferRequest request){
         return cardTransferService.transferMeCards(request);
     }
 

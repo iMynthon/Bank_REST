@@ -17,6 +17,7 @@ import com.example.bankcards.repository.projections.CardProjections;
 import com.example.bankcards.util.SecurityUtils;
 import com.example.bankcards.util.StringMaskedUtils;
 import com.example.bankcards.util.StringUtilsMessage;
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -63,8 +64,9 @@ public class CardService {
 
     @Transactional
     public String depositMeCard(DepositRequest request){
-        cardRepository.addToScore(request.numberCard(),request.score());
-        return String.format("Карта - %s - успешно пополнена неа сумму - %s",StringMaskedUtils.maskedNumberCard(request.numberCard()),request.score());
+        cardRepository.addToScore(request.numberCard(),request.amount());
+        return String.format("Карта - %s - успешно пополнена на сумму - %s",
+                StringMaskedUtils.maskedNumberCard(request.numberCard()),request.amount());
     }
 
     @Transactional
@@ -72,7 +74,7 @@ public class CardService {
         User user = userRepository.findById(cardRequest.userId())
                 .orElseThrow(() -> new EntityNotFoundException(StringUtilsMessage.USER_ENTITY_NOT_FOUND));
         Card card = cardRepository.save(Card.builder()
-                .numberCard(cardRequest.numberCard())
+                .numberCard(generatedNumberCard())
                 .paymentSystem(cardRequest.paymentSystem())
                 .isActive(false)
                 .user(user)
@@ -116,5 +118,10 @@ public class CardService {
                 .validityPeriod(StringMaskedUtils.createValidityPeriod(card.getValidityPeriodFrom(),card.getValidityPeriodTo()))
                 .isActive(card.getIsActive())
                 .build();
+    }
+
+    private String generatedNumberCard() {
+        Faker faker = Faker.instance();
+        return faker.finance().creditCard();
     }
 }
