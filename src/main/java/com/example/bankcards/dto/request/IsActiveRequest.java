@@ -10,8 +10,8 @@ import java.util.UUID;
 public record IsActiveRequest(
         @NotNull(message = "В запросе не указан идентификатор пользователя - userId")
         UUID userId,
-        @NotBlank(message = "В запросе не указан номер карты - numberCard")
-        String numberCard,
+        @NotBlank(message = "В запросе не указан номер карты - hashNumberCard")
+        String hashNumberCard,
         @NotNull(message = "В запросе не указано активировать или заблокировать карту - isActive")
         Boolean isActive
 ) {

@@ -15,7 +15,7 @@ public record UserRequest(
         String lastName,
         String patronymic,
         @NotBlank(message = "В запросе не указан номер телефона - phoneNumber")
-        @Pattern(message = "Формат введенного вами номера не валидный", regexp = "^\\+\\d{1,3}\\d{4,15}$")
+        @Pattern(message = "Формат введенного вами номера не валидный", regexp = "^([78])[\\s\\-]?\\(?\\d{3}\\)?[\\s\\-]?\\d{3}[\\s\\-]?\\d{2}[\\s\\-]?\\d{2}$")
         String phoneNumber,
         @NotBlank(message = "В запросе не задан пароль - password")
         @Size(min = 5, message = "Пароль не может быть короче {min} символов")

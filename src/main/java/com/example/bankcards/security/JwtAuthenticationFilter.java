@@ -1,5 +1,4 @@
 package com.example.bankcards.security;
-
 import com.example.bankcards.model.Role;
 import com.example.bankcards.model.RoleType;
 import com.example.bankcards.service.security.JwtTokenService;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import static com.example.bankcards.service.security.JwtTokenService.ID_CLAIM;

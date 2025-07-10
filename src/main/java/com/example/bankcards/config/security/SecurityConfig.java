@@ -1,6 +1,8 @@
 package com.example.bankcards.config.security;
 import com.example.bankcards.security.JwtAuthenticationFilter;
 import com.example.bankcards.service.security.JwtTokenService;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    @Bean
+    public StringEncryptor stringEncryptor() {
+        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
+        encryptor.setPassword("my-secret-key");
+        encryptor.setAlgorithm("PBEWithMD5AndDES");
+        encryptor.setPoolSize(4);
+        return encryptor;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){

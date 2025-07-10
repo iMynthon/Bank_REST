@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 
 @Builder
 public record CardTransferRequest(
-        @NotBlank(message = "В запросе не указан номер карты с который собираетесь сделать перевод - numberCard")
-        String sourceCard,
-        @NotBlank(message = "В запросе не указан номер карты на которую собираетесь сделать перевод - numberCard")
-        String targetCard,
+        @NotBlank(message = "В запросе не указан номер карты с который собираетесь сделать перевод - hashSourceCard")
+        String hashSourceCard,
+        @NotBlank(message = "В запросе не указан номер карты на которую собираетесь сделать перевод - hashTargetCard")
+        String hashTargetCard,
         @NotNull(message = "В запросе не указана сумма перевода - amount")
         @DecimalMin(value = "0.01", message = "Минимальная сумма перевода - {value}")
         BigDecimal amount

@@ -156,7 +156,7 @@ public class AbstractTest {
                         .user(user)
                         .score(new BigDecimal(300000))
                         .numberCard("2222 2222 2222 2222")
-                        .paymentSystem(PaymentSystem.MASTER_CARD)
+                        .paymentSystem(PaymentSystem.MASTERCARD)
                         .isActive(new Random().nextBoolean())
                         .build(),
 
@@ -184,7 +184,7 @@ public class AbstractTest {
                         .user(user4)
                         .score(new BigDecimal(450000))
                         .numberCard("5555 5555 5555 5555")
-                        .paymentSystem(PaymentSystem.MASTER_CARD)
+                        .paymentSystem(PaymentSystem.MASTERCARD)
                         .isActive(new Random().nextBoolean())
                         .build(),
 

@@ -22,11 +22,11 @@ public class CardTransfer {
     @Column(name = "user_id")
     private UUID userId;
 
-    @Column(name = "source_card")
-    private String sourceCard;
+    @Column(name = "source_hash_card")
+    private String sourceHashCard;
 
-    @Column(name = "target_card")
-    private String targetCard;
+    @Column(name = "target_hash_card")
+    private String targetHashCard;
 
     private BigDecimal amount;
 

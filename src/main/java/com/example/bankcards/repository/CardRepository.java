@@ -21,19 +21,19 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
     Page<Card> findCardByUserId(UUID userId, Pageable pageable);
 
     @EntityGraph(attributePaths = "user")
-    Optional<Card> findByNumberCard(String numberCard);
+    Optional<Card> findByHashCardNumber(String numberCard);
 
-    Optional<CardProjections> findNumberCardByUserIdAndNumberCard(UUID userId,String numberCard);
-
-    @Modifying
-    @Query(value = "UPDATE cards SET is_active = :isActive WHERE number_card = :numberCard",nativeQuery = true)
-    void IsActive(String numberCard,boolean isActive);
+    Optional<CardProjections> findNumberCardByUserIdAndHashCardNumber(UUID userId,String hashCardNumber);
 
     @Modifying
-    @Query(value = "UPDATE cards SET score = score + :amount WHERE number_card = :numberCard", nativeQuery = true)
-    void addToScore(String numberCard, BigDecimal amount);
+    @Query(value = "UPDATE cards SET is_active = :isActive WHERE hash_card_number = :hashNumberCard",nativeQuery = true)
+    void IsActive(String hashNumberCard,boolean isActive);
 
     @Modifying
-    @Query(value = "UPDATE cards SET score = score - :amount WHERE number_card = :numberCard", nativeQuery = true)
-    void subtractFromScore(String numberCard, BigDecimal amount);
+    @Query(value = "UPDATE cards SET score = score + :amount WHERE hash_card_number = :hashNumberCard", nativeQuery = true)
+    void addToScore(String hashNumberCard, BigDecimal amount);
+
+    @Modifying
+    @Query(value = "UPDATE cards SET score = score - :amount WHERE hash_card_number = :hashNumberCard", nativeQuery = true)
+    void subtractFromScore(String hashNumberCard, BigDecimal amount);
 }

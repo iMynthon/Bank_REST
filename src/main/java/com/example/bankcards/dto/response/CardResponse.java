@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Builder
 public class CardResponse {
     private String numberCard;
+    private String hashCardNumber;
     private PaymentSystem paymentSystem;
     private BigDecimal score;
     private String owner;

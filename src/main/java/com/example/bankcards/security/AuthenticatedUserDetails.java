@@ -14,7 +14,7 @@ public class AuthenticatedUserDetails implements UserDetailsService {
     private final UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        return new AuthenticatedDetails(userService.findById());
+    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+        return new AuthenticatedDetails(userService.findByPhoneNumber(phoneNumber));
     }
 }

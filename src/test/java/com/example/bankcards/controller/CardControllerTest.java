@@ -7,7 +7,7 @@ import com.example.bankcards.dto.request.CardTransferRequest;
 import com.example.bankcards.dto.request.IsActiveRequest;
 import com.example.bankcards.model.PaymentSystem;
 import com.example.bankcards.model.User;
-import com.example.bankcards.util.StringMaskedUtils;
+import com.example.bankcards.util.StringCreatorUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -36,7 +36,7 @@ public class CardControllerTest extends AbstractTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.listCards.content.length()").value(3))
                 .andExpect(jsonPath("$.listCards.content.[0].paymentSystem").value(PaymentSystem.VISA.toString()))
-                .andExpect(jsonPath("$.listCards.content.[1].paymentSystem").value(PaymentSystem.MASTER_CARD.toString()))
+                .andExpect(jsonPath("$.listCards.content.[1].paymentSystem").value(PaymentSystem.MASTERCARD.toString()))
                 .andExpect(jsonPath("$.listCards.content.[2].paymentSystem").value(PaymentSystem.MIR.toString()))
                 .andDo(print());
     }
@@ -67,11 +67,10 @@ public class CardControllerTest extends AbstractTest {
     void testCreateCards() throws Exception {
         User user = userRepository.findByPhoneNumber(adminNumber).orElseThrow();
         User user1 = userRepository.findByPhoneNumber(phoneNumber).orElseThrow();
-        String owner = StringMaskedUtils.createOwner(user1.getFirstName(),user1.getLastName(),user1.getPatronymic());
+        String owner = StringCreatorUtils.createOwner(user1.getFirstName(),user1.getLastName(),user1.getPatronymic());
         CardRequest cardRequest = CardRequest.builder()
                 .userId(user1.getId())
-                .numberCard("2345 6789 7890 5678")
-                .paymentSystem(PaymentSystem.MASTER_CARD)
+                .paymentSystem(PaymentSystem.MASTERCARD)
                 .build();
         String token = "Bearer " + jwtTokenService
                 .generatedToken(user.getId(), adminNumber, user.getRoles().stream().map(role -> role.getRoleType().toString()).toList());
@@ -80,14 +79,13 @@ public class CardControllerTest extends AbstractTest {
                         .content(objectMapper.writeValueAsBytes(cardRequest))
                         .header("Authorization", token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.paymentSystem").value(PaymentSystem.MASTER_CARD.toString()))
+                .andExpect(jsonPath("$.paymentSystem").value(PaymentSystem.MASTERCARD.toString()))
                 .andExpect(jsonPath("$.owner").value(owner))
                 .andExpect(jsonPath("$.numberCard").isNotEmpty())
                 .andDo(print());
 
         CardRequest cardRequest1 = CardRequest.builder()
-                .numberCard("2345 6789 7890 5678")
-                .paymentSystem(PaymentSystem.MASTER_CARD)
+                .paymentSystem(PaymentSystem.MASTERCARD)
                 .build();
         String token1 = "Bearer " + jwtTokenService
                 .generatedToken(user1.getId(), adminNumber, user1.getRoles().stream().map(role -> role.getRoleType().toString()).toList());

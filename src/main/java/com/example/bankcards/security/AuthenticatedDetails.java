@@ -24,6 +24,6 @@ public class AuthenticatedDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getId().toString();
+        return user.getPhoneNumber();
     }
 }

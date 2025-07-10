@@ -8,28 +8,28 @@ import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.model.Role;
 import com.example.bankcards.model.User;
 import com.example.bankcards.repository.UserRepository;
-import com.example.bankcards.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
-
+import static com.example.bankcards.util.SecurityUtils.userId;
 import static com.example.bankcards.util.StringUtilsMessage.USER_DELETE;
 import static com.example.bankcards.util.StringUtilsMessage.USER_ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 @LogService
+@CacheConfig(cacheNames = "redisCacheManager")
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final ApplicationContext context;
     private final PasswordEncoder encoder;
-
 
     @Transactional(readOnly = true)
     public AllUserResponse findAll(Pageable pageable){
@@ -43,12 +43,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse findByUserId(UUID id){
         return userMapper.entityToResponse(userRepository.findById(id)
-                .orElseThrow());
+                .orElseThrow(() -> new EntityNotFoundException(USER_ENTITY_NOT_FOUND)));
     }
 
     @Transactional(readOnly = true)
     public User findById(){
-        return userRepository.findById(SecurityUtils.userId())
+        return userRepository.findById(userId())
                 .orElseThrow(()-> new EntityNotFoundException(USER_ENTITY_NOT_FOUND));
     }
 
@@ -65,9 +65,15 @@ public class UserService {
         return userMapper.entityToResponse(userRepository.save(exists));
     }
 
+    @Transactional
     public String delete(UUID userId){
         userRepository.deleteById(userId);
         return USER_DELETE;
+    }
+
+    public User findByPhoneNumber(String phoneNumber){
+        return userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(()-> new EntityNotFoundException(USER_ENTITY_NOT_FOUND));
     }
 
     private User createUser(UserRequest request){

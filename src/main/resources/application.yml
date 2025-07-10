@@ -28,6 +28,17 @@ spring:
 logging:
   pattern:
     console: '%clr(%d{HH:mm:ss}){faint} %clr(%-5level) %clr([%logger{0}]){cyan} %clr(:){faint} %m%n'
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    config-url: /api-docs/swagger-config
+    enabled: true
+    url: /docs/openapi.yaml
+  cache:
+    disabled: true
+
 bank-rest:
   jwt:
     secret: IpE6TJFTzCYzwOErToyepPfZgASIIpURNPZpzB2zzBD64JvDNmXg6grT8O7DdowGXIO/7lvKqSTG6xODjEiNxg==

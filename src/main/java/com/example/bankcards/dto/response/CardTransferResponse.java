@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Builder
 public record CardTransferResponse(
-        String sourceCard,
-        String targetCard,
+        String hashSourceCard,
+        String hashTargetCard,
         BigDecimal amount,
         LocalDateTime transferTime,
         StatusTransfer statusTransfer

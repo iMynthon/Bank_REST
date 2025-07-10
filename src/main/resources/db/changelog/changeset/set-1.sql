@@ -2,10 +2,10 @@
 * Database Change Log - SQL Format
 * Version: 1.1
 * Author: Mynthon
-* Date: 05.07.2025
-* Изменение колонки в таблице users
+* Date: 10.07.2025
+* Изменение колонки в таблице users и добавление индексов
 * Упорядоченные по наборам изменений, соответствующим формату Liquibase
-* Всего 1 операция
+* Всего 4 операции
 */
 
 ALTER TABLE users ALTER COLUMN patronymic DROP NOT NULL;

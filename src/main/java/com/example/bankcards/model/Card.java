@@ -25,6 +25,9 @@ public class Card {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "hash_card_number")
+    private String hashCardNumber;
+
     @Column(name = "number_card")
     private String numberCard;
 

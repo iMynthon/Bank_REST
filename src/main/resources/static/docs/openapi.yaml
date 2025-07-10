@@ -1,0 +1,547 @@
+openapi: 3.0.3
+info:
+  title: Bank Service API
+  version: 1.0.0
+  description: API для управления пользователями, картами и переводами
+
+servers:
+  - url: http://localhost:8090/api/v1
+    description: Local server
+
+paths:
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Регистрация нового пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Аутентификация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Успешная аутентификация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenData'
+
+  /user/me:
+    get:
+      tags: [User]
+      summary: Получить данные текущего пользователя
+      security: [{bearerAuth: []}]
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+    put:
+      tags: [User]
+      summary: Обновить данные пользователя
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Данные обновлены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /user/all:
+    get:
+      tags: [Admin]
+      summary: Получить всех пользователей (ADMIN)
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUserResponse'
+
+  /user/{userId}:
+    get:
+      tags: [Admin]
+      summary: Получить пользователя по ID (ADMIN)
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /user/{userId}/delete:
+    delete:
+      tags: [Admin]
+      summary: Удалить пользователя (ADMIN)
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: Пользователь удален
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Пользователь успешно удален"
+
+  /card/all:
+    get:
+      tags: [Admin Cards]
+      summary: Получить все карты (ADMIN)
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCardResponse'
+
+  /card/me:
+    get:
+      tags: [User Cards]
+      summary: Получить мои карты
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCardResponse'
+
+  /card/active:
+    put:
+      tags: [Admin Cards]
+      summary: Активировать/заблокировать карту (ADMIN)
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsActiveRequest'
+      responses:
+        '200':
+          description: Статус изменен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsActiveResponse'
+
+  /card/create:
+    post:
+      tags: [Admin Cards]
+      summary: Создать карту (ADMIN)
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRequest'
+      responses:
+        '200':
+          description: Карта создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+
+  /card/me/deposit:
+    put:
+      tags: [User Cards]
+      summary: Пополнить карту
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositRequest'
+      responses:
+        '200':
+          description: Баланс пополнен
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Карта с хэш кодом - 8953d8c18ec1cd1531179aeb6c99e720bb1ea22df22fa4a4991343803d58f99b - успешно пополнена на сумму - 2000000"
+
+  /card/transfer:
+    post:
+      tags: [Transfers]
+      summary: Перевод между картами
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardTransferRequest'
+      responses:
+        '200':
+          description: Перевод выполнен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardTransferResponse'
+
+  /card/me/transfers:
+    get:
+      tags: [Transfers]
+      summary: История моих переводов
+      security: [{bearerAuth: []}]
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCardTransferResponse'
+
+components:
+  schemas:
+    # User Schemas
+    UserRequest:
+      type: object
+      required: [firstName, lastName, phoneNumber, password, role]
+      properties:
+        firstName:
+          type: string
+          example: Иван
+          minLength: 1
+        lastName:
+          type: string
+          example: Иванов
+          minLength: 1
+        patronymic:
+          type: string
+          example: Иванович
+          nullable: true
+        phoneNumber:
+          type: string
+          example: "79123456789"
+          pattern: "^([78])[\\s\\-]?\\(?\\d{3}\\)?[\\s\\-]?\\d{3}[\\s\\-]?\\d{2}[\\s\\-]?\\d{2}$"
+        password:
+          type: string
+          example: mySecurePassword123
+          minLength: 5
+        role:
+          $ref: '#/components/schemas/RoleType'
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        firstName:
+          type: string
+          example: Иван
+        lastName:
+          type: string
+          example: Иванов
+        phoneNumber:
+          type: string
+          example: "79123456789"
+        registerTime:
+          type: string
+          format: local-date-time
+          example: "2025-07-10T19:47:01.101087100"
+
+    LoginRequest:
+      type: object
+      required: [phoneNumber, password]
+      properties:
+        phoneNumber:
+          type: string
+          example: "79123456789"
+          pattern: "^([78])[\\s\\-]?\\(?\\d{3}\\)?[\\s\\-]?\\d{3}[\\s\\-]?\\d{2}[\\s\\-]?\\d{2}$"
+        password:
+          type: string
+          example: mySecurePassword123
+
+    TokenData:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    AllUserResponse:
+      type: object
+      properties:
+        users:
+          $ref: '#/components/schemas/PageUserResponse'
+
+    # Card Schemas
+    IsActiveRequest:
+      type: object
+      required: [userId, hashNumberCard, isActive]
+      properties:
+        userId:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        hashNumberCard:
+          type: string
+          example: "8953d8c18ec1cd1531179aeb6c99e720bb1ea22df22fa4a4991343803d58f99b"
+        isActive:
+          type: boolean
+          example: true
+
+    DepositRequest:
+      type: object
+      required: [hashNumberCard, amount]
+      properties:
+        hashNumberCard:
+          type: string
+          example: "149dcf676f8432d6eb76b92ba45989b63e3926e6dbb78d17def89dfaabd61a72"
+        amount:
+          type: number
+          format: decimal
+          example: 1000.50
+          minimum: 0.01
+
+    CardTransferRequest:
+      type: object
+      required: [hashSourceCard, hashTargetCard, amount]
+      properties:
+        hashSourceCard:
+          type: string
+          example: "149dcf676f8432d6eb76b92ba45989b63e3926e6dbb78d17def89dfaabd61a72"
+        hashTargetCard:
+          type: string
+          example: "8953d8c18ec1cd1531179aeb6c99e720bb1ea22df22fa4a4991343803d58f99b"
+        amount:
+          type: number
+          format: decimal
+          example: 500.75
+          minimum: 0.01
+
+    CardRequest:
+      type: object
+      required: [userId, paymentSystem]
+      properties:
+        userId:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        paymentSystem:
+          $ref: '#/components/schemas/PaymentSystem'
+
+    IsActiveResponse:
+      type: object
+      properties:
+        hashNumberCard:
+          type: string
+          example: "149dcf676f8432d6eb76b92ba45989b63e3926e6dbb78d17def89dfaabd61a72"
+        isActive:
+          type: boolean
+          example: true
+
+    CardTransferResponse:
+      type: object
+      properties:
+        hashSourceCard:
+          type: string
+          example: "149dcf676f8432d6eb76b92ba45989b63e3926e6dbb78d17def89dfaabd61a72"
+        hashTargetCard:
+          type: string
+          example: "8953d8c18ec1cd1531179aeb6c99e720bb1ea22df22fa4a4991343803d58f99b"
+        amount:
+          type: number
+          format: decimal
+          example: 500.75
+        transferTime:
+          type: string
+          format: local-date-time
+          example: "2025-07-10T19:47:01.101087100"
+        statusTransfer:
+          $ref: '#/components/schemas/StatusTransfer'
+
+    CardResponse:
+      type: object
+      properties:
+        numberCard:
+          type: string
+          example: "**** **** **** 4444"
+        hashNumberCard:
+          type: string
+          example: "149dcf676f8432d6eb76b92ba45989b63e3926e6dbb78d17def89dfaabd61a72"
+        paymentSystem:
+          $ref: '#/components/schemas/PaymentSystem'
+        score:
+          type: number
+          format: decimal
+          example: 1500.00
+        owner:
+          type: string
+          example: "Иван Иванов Иванович"
+        validityPeriod:
+          type: string
+          example: "2025-07-10T19:47:01.101087100 + 2030-07-10T19:47:01.101087100"
+        isActive:
+          type: boolean
+          example: true
+
+    AllCardTransferResponse:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardTransferResponse'
+
+    AllCardResponse:
+      type: object
+      properties:
+        listCards:
+          $ref: '#/components/schemas/PageCardResponse'
+
+    # Common Schemas
+    PageUserResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        totalPages:
+          type: integer
+          example: 1
+        totalElements:
+          type: integer
+          example: 1
+
+    PageCardResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardResponse'
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        totalPages:
+          type: integer
+          example: 1
+        totalElements:
+          type: integer
+          example: 1
+
+    RoleType:
+      type: string
+      enum: [USER, ADMIN]
+      example: USER
+
+    PaymentSystem:
+      type: string
+      enum: [VISA, MASTERCARD, MIR]
+      example: VISA
+
+    StatusTransfer:
+      type: string
+      enum: [SUCCESSFULLY, UNSUCCESSFULLY]
+      example: SUCCESSFULLY
+
+    Pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 20
+        offset:
+          type: integer
+          example: 0
+        paged:
+          type: boolean
+          example: true
+
+  parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "123e4567-e89b-12d3-a456-426614174000"
+
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+
+    size:
+      name: size
+      in: query
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

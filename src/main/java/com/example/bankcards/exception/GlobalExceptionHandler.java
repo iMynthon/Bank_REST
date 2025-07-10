@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InsufficientFundsException.class)
-    public ErrorResponse catchInsufficientFundsException(InsufficientFundsException ife){
+    @ExceptionHandler(TransferException.class)
+    public ErrorResponse catchInsufficientFundsException(TransferException ife){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),ife.getMessage());
     }
 
@@ -27,6 +27,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(isActiveRequestException.class)
     public ErrorResponse catchIsActiveRequestException(isActiveRequestException iar){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),iar.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(CheckPasswordException.class)
+    public ErrorResponse catchVCheckPasswordException(CheckPasswordException cpe){
+        return new ErrorResponse(HttpStatus.FORBIDDEN.value(), cpe.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

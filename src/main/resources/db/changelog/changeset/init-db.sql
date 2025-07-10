@@ -28,6 +28,7 @@ CREATE TABLE bank_schema.roles(
 CREATE TABLE bank_schema.cards(
  id UUID PRIMARY KEY NOT NULL,
  number_card VARCHAR(55) NOT NULL UNIQUE,
+ hash_card_number VARCHAR(255) NOT NULL UNIQUE,
  payment_system VARCHAR(55) NOT NULL,
  score NUMERIC(15,2) NOT NULL,
  validity_period_from TIMESTAMP NOT NULL,
@@ -40,19 +41,23 @@ CREATE TABLE bank_schema.cards(
 CREATE TABLE bank_schema.cards_transfers(
  id UUID PRIMARY KEY NOT NULL,
  user_id UUID NOT NULL,
- source_card VARCHAR(55) NOT NULL,
- target_card VARCHAR(55) NOT NULL,
+ source_hash_card VARCHAR(255) NOT NULL,
+ target_hash_card VARCHAR(255) NOT NULL,
  amount NUMERIC(15,2) NOT NULL,
  error_message VARCHAR(255),
  transfer_time TIMESTAMP NOT NULL,
  status_transfer VARCHAR(55) NOT NULL
 );
 
+
+CREATE INDEX idx_users_phone_number ON users(phone_number);
+CREATE INDEX idx_users_first_name ON users(first_name);
+CREATE INDEX idx_users_last_name ON users(last_name);
 CREATE INDEX idx_cards_user_id ON cards(user_id);
 CREATE INDEX idx_cards_validity_period ON cards(validity_period_from, validity_period_to);
 CREATE INDEX idx_cards_active ON cards(is_active);
 CREATE INDEX idx_transfers_status ON cards_transfers(status_transfer);
-CREATE INDEX idx_transfers_source ON cards_transfers(source_card);
-CREATE INDEX idx_transfers_target ON cards_transfers(target_card);
+CREATE INDEX idx_transfers_source ON cards_transfers(source_hash_card);
+CREATE INDEX idx_transfers_target ON cards_transfers(target_hash_card);
 CREATE INDEX idx_transfers_time ON cards_transfers(transfer_time);
 CREATE INDEX idx_roles_user_id ON roles(user_id);
