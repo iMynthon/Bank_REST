@@ -33,8 +33,8 @@ public class LoggableController {
         time.stop();
         String stopWatchOutput = String.format("method %s executed in %f seconds", methodName,
                 time.getTotalTimeSeconds());
-        log.info("Execution metrics controller: {}", stopWatchOutput);
-        log.info("After controller: - {}", result == null ? "void" : result);
+        log.info("Время выполнения методы контроллера: {}", stopWatchOutput);
+        log.info("Окончание метода контроллера: - {}", result == null ? "void" : result);
         return result;
     }
 

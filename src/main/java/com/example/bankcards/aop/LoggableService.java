@@ -17,15 +17,15 @@ public class LoggableService {
     public Object loggingServiceClass(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String methodName = signature.getMethod().getDeclaringClass().getSimpleName() + " - " + signature.getName();
-        log.info("before service {}, args=[{}]", methodName, joinPoint.getArgs());
+        log.info("Вход в сервис {}, аргументы метода=[{}]", methodName, joinPoint.getArgs());
         StopWatch time = new StopWatch();
         time.start();
         Object result = joinPoint.proceed();
         time.stop();
-        String stopWatchOutput = String.format("method %s executed in %f seconds", methodName,
+        String stopWatchOutput = String.format("Метод %s выполнялся в %f секундах", methodName,
                 time.getTotalTimeSeconds());
-        log.info("Execution metrics service: {}", stopWatchOutput);
-        log.info("After service: - {}",result == null ? "void" : result);
+        log.info("ремся выполнения методы контроллера: {}", stopWatchOutput);
+        log.info("Окончание метода сервиса: - {}",result == null ? "void" : result);
         return result;
     }
 }
