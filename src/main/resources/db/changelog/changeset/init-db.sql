@@ -12,7 +12,7 @@ CREATE TABLE bank_schema.users(
    id UUID PRIMARY KEY NOT NULL,
    first_name VARCHAR(100) NOT NULL,
    last_name VARCHAR(100) NOT NULL,
-   patronymic VARCHAR(100) NOT NULL,
+   patronymic VARCHAR(100),
    password VARCHAR(255) NOT NULL,
    phone_number VARCHAR(20) NOT NULL UNIQUE,
    register_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
