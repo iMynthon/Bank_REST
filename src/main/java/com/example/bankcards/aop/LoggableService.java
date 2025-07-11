@@ -24,7 +24,7 @@ public class LoggableService {
         time.stop();
         String stopWatchOutput = String.format("Метод %s выполнялся в %f секундах", methodName,
                 time.getTotalTimeSeconds());
-        log.info("ремся выполнения методы контроллера: {}", stopWatchOutput);
+        log.info("Время выполнения методы сервиса: {}", stopWatchOutput);
         log.info("Окончание метода сервиса: - {}",result == null ? "void" : result);
         return result;
     }

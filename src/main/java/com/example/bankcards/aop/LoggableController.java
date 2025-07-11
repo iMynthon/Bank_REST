@@ -30,8 +30,7 @@ public class LoggableController {
         StopWatch time = new StopWatch();
         time.start();
         Object result = joinPoint.proceed();
-        time.stop();
-        String stopWatchOutput = String.format("method %s executed in %f seconds", methodName,
+        String stopWatchOutput = String.format("Метод %s выполнялся в %f секундах", methodName,
                 time.getTotalTimeSeconds());
         log.info("Время выполнения методы контроллера: {}", stopWatchOutput);
         log.info("Окончание метода контроллера: - {}", result == null ? "void" : result);

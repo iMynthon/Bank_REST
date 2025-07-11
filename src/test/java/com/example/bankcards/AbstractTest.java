@@ -51,6 +51,7 @@ public class AbstractTest {
 
     @BeforeEach
     void setUp(){
+        userRepository.deleteAll();
         userRepository.saveAll(new ArrayList<>(List.of(createUser())));
     }
 
